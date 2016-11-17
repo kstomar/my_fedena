@@ -69,6 +69,14 @@
       </div>
     <% end %>
 
+    <% if permitted_to? :settings, :configuration %>
+
+      <div class="link-box">
+        <div class="link-heading"><%= link_to "Add subjects categories", :controller=>"subject_categories", :action=>"index" %></div>
+        <div class="link-descr"><%= "Add subjects categories" %></div>
+      </div>
+    <% end %>
+
     <% if permitted_to? :index, :sms %>
       <div class="link-box">
         <div class="link-heading"><%= link_to "#{t('sms_module')}", :controller=>"sms", :action => "index" %></div>

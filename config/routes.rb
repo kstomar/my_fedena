@@ -6,6 +6,7 @@ ActionController::Routing::Routes.draw do |map|
   #map.resources :exam_reports, :collection => {:course_reports_index=>[:get,:post], :batch_reports_index=>[:get,:post]}
   map.resources :class_timings
   map.resources :subjects
+  map.resources :subject_categories
   map.resources :attendances, :collection=>{:daily_register=>:get,:subject_wise_register=>:get}
   map.resources :employee_attendances
   map.resources :attendance_reports

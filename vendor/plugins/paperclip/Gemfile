@@ -8,3 +8,8 @@ gem "sqlite3-ruby", "~>1.3.0"
 gem "appraisal"
 gem "fog"
 gem "bundler"
+gem "ruby-debug19", :require => 'ruby-debug'
+
+group :development, :test do
+  gem 'debugger'
+end

@@ -26,6 +26,17 @@
     <div id="form-errors"></div>
 
     <div class="label-field-pair">
+        <label for="student_categories"><%= t('categories') %>:
+      <%= image_tag("loader.gif",:align => "absmiddle",:border => 0,:id => "loader", :style =>"display: none;" ) %>
+       </label>
+       <div class="text-input-bg">
+      <%= f.select :subject_category_id,
+        @subject_categories.map {|b| [b.name, b.id] },
+      {:prompt => 'Select a categories'},{:required => true}%>
+       </div>
+    </div>
+
+    <div class="label-field-pair">
       <div class="label-container"><%= f.label :"#{t('name')}" %></div>
       <div class="input-container"> <%= f.text_field :name %></div>
     </div>

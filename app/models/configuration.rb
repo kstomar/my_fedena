@@ -78,7 +78,8 @@ class Configuration < ActiveRecord::Base
 
     def get_grading_types
       grading_types = Course::GRADINGTYPES
-      types= all(:conditions=>{:config_key=>grading_types.values, :config_value=>"1"},:group=>:config_key)
+     
+      types= all(:conditions=>{:config_key=>grading_types.values, :config_value=>"1"})
       grading_types.keys.select{|k| types.collect(&:config_key).include? grading_types[k]}      
     end
 

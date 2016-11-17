@@ -60,6 +60,7 @@
                   <td><%= exam_group.name %></td>
                 <% end %>
                 <td><%= t('combined') %></td>
+                <td class="col-pdf">TEACHERS REMARKS</td>
               </tr>
               <% c ='even' %>
               <% @subjects.each do |subject| %>
@@ -90,6 +91,8 @@
                   <% end %>
                   <% subject_average = GroupedExamReport.find_by_student_id_and_subject_id_and_score_type(student.id,subject.id,"s") %>
                   <td class="col-pdf"><%= subject_average.present? ? subject_average.marks : "-" %></td>
+
+                  <td class="col-pdf">TEACHERS REMARKS</td>
                 </tr>
               <% end %>
               <tr class="table-header">
@@ -109,7 +112,127 @@
                 <% total_avg = GroupedExamReport.find_by_student_id_and_batch_id_and_score_type(student.id,student.batch.id,"c") %>
                 <td class="col-pdf"><%= total_avg.present? ? total_avg.marks : "-" %></td>
               </tr>
+              <tr class="table-header">
+                <td align="right"> Total Scores</td>
+                <% @exam_groups.each do |exam_group| %>
+                  <td class="col-pdf">
+                    <%= total_score(student, exam_group)%> 
+                  </td>
+                <% end %>
+                <td class="col-pdf"></td>
+              </tr>
+              <tr class="table-header">
+                <td align="right"> Out Of</td>
+                <% @exam_groups.each do |exam_group| %>
+                  <td class="col-pdf">
+                    <%= total_out_of(student, exam_group)%> 
+                  </td>
+                <% end %>
+                <td class="col-pdf"></td>
+              </tr>
+               
+              <tr class="table-header">
+                <td align="right"> Position this term</td>
+                <% @exam_groups.each do |exam_group| %>
+                  <td class="col-pdf">
+                    <%= total_out_of(student, exam_group)%> 
+                  </td>
+                <% end %>
+                <td class="col-pdf"></td>
+              </tr>
+
+
+              <tr class="table-header">
+                <td align="right"> Out Of </td>
+                <% @exam_groups.each do |exam_group| %>
+                  <td class="col-pdf">
+                    <%= total_out_of(student, exam_group)%> 
+                  </td>
+                <% end %>
+                <td class="col-pdf"></td>
+              </tr>
+              
+              <tr class="table-header">
+                <td align="right"> Meanscore & Grade </td>
+                <% @exam_groups.each do |exam_group| %>
+                  <td class="col-pdf">
+                    <%= total_out_of(student, exam_group)%> 
+                  </td>
+                <% end %>
+                <td class="col-pdf"></td>
+              </tr>
+              
+              <tr class="odd">
+                <td > Class Teachers Comment </td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf"></td>
+              </tr>
+
+              <tr class="even">
+                <td > Date </td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf"></td>
+              </tr>
+
+              <tr class="odd">
+                <td > Headmasters Remarks </td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf"></td>
+              </tr>
+
+              <tr class="even">
+                <td > Date </td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf"></td>
+              </tr>
+              
+              <tr class="odd">
+                <td > Report Seen By </td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf"></td>
+              </tr>
+              
+              <tr class="even">
+                <td class="col-pdf"> </td>
+                <td class="col-pdf">Parent/Gurdian</td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf">Sign</td>
+              </tr>
+              <tr class="odd">
+                <td class="col-pdf"> </td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf"></td>
+              </tr>
+              <tr class="even">
+                <td class="col-pdf"> </td>
+                <td class="col-pdf">Next Term Starts on</td>
+                <td class="col-pdf"></td>
+                <td class="col-pdf">Date</td>
+              </tr>
+
+              <tr class="odd">
+                <td class="col-pdf" colspan="4">Students Must bring fees as shown below </td>
+              </tr>
+              <tr class="even">
+                <td class="col-pdf" colspan="2">Outstanding Fees </td>
+                <td class="col-pdf" colspan="2">Outstanding Fees </td>
+              </tr>
+              <tr class="odd">
+                <td class="col-pdf" colspan="2">Next Term fees</td>
+                <td class="col-pdf" colspan="2">Next Term fees</td>
+              </tr>
+              <tr class="even">
+                <td class="col-pdf" colspan="2">TOTAL FEES</td>
+                <td class="col-pdf" colspan="2">Next Term fees</td>
+              </tr>
             </table>
+
           <% else %>
             <% all_exams = @exam_groups.reject{|ex| ex.exam_type == "Grades"} %>
             <table id="pdf-table" width="100%" cellspacing="0">
@@ -186,3 +309,7 @@
     <% end %>
   </div>
 </div>
+
+
+
+
