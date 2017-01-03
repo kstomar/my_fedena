@@ -1,10 +1,10 @@
 development:
       host: localhost
       adapter: mysql
-      database: fedena_ultimate
+      database: fedena_ultimate_q
       port: 3306
       username: root
-      password: foradian
+      password: root
 
 test: &test
       host: localhost
@@ -12,14 +12,14 @@ test: &test
       database: fedena_two_new
       port: 3306
       username: root
-      password: foradian
+      password: root
 
 production:
       host: localhost
       adapter: mysql
-      database: fedena_ultimate
+      database: fedena_ultimate_q
       port: 3306
       username: root
-      password: foradian
+      password: root
 cucumber:
   <<: *test

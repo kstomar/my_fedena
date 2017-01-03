@@ -25,6 +25,7 @@ class GradingLevelsController < ApplicationController
   end
 
   def new
+    @subject_categories = SubjectCategory.all
     @grading_level = GradingLevel.new
     @batch = Batch.find params[:id] if request.xhr? and params[:id]
     if @batch.present?
@@ -38,6 +39,7 @@ class GradingLevelsController < ApplicationController
   end
 
   def create
+    @subject_categories = SubjectCategory.all
     @grading_level = GradingLevel.new(params[:grading_level])
     @batch = Batch.find params[:grading_level][:batch_id] unless params[:grading_level][:batch_id].empty?
     respond_to do |format|

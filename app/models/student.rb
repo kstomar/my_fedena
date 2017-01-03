@@ -116,7 +116,25 @@ class Student < ActiveRecord::Base
     self.email = "" if self.email.blank?
     return false unless errors.blank?
   end
+  
 
+  def total_score exam_group, subjects
+    student = self
+    subjects.map do |subject| 
+      @exam= Exam.find_by_subject_id_and_exam_group_id(subject.id,exam_group.id) 
+      exam_score = ExamScore.find_by_student_id(student.id, :conditions=>{:exam_id=>@exam.id})
+      exam_score ? exam_score.marks.to_f : 0
+    end.sum  
+  end
+
+  def total_out_of exam_group, subjects
+    student = self
+    subjects.map do |subject| 
+      @exam= Exam.find_by_subject_id_and_exam_group_id(subject.id,exam_group.id)
+      @exam.maximum_marks.to_f
+    end.sum  
+  end
+  
   def check_user_errors(user)
     unless user.valid?
       user.errors.each{|attr,msg| errors.add(attr.to_sym,"#{msg}")}

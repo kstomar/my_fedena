@@ -25,6 +25,7 @@ class SubjectsController < ApplicationController
 
   def new
     @subject = Subject.new
+    @subject_categories = SubjectCategory.all
     @batch = Batch.find params[:id] if request.xhr? and params[:id]
     @elective_group = ElectiveGroup.find params[:id2] unless params[:id2].nil?
     respond_to do |format|

@@ -27,7 +27,17 @@
 
     <% batch_id = (@batch.nil? ? nil : @batch.id) %>
     <%= f.hidden_field :batch_id, :value => batch_id %>
-
+    
+    <div class="label-field-pair">
+        <label for="student_categories"><%= t('categories') %>:
+      <%= image_tag("loader.gif",:align => "absmiddle",:border => 0,:id => "loader", :style =>"display: none;" ) %>
+       </label>
+       <div class="text-input-bg">
+      <%= f.select :subject_category_id,
+        @subject_categories.map {|b| [b.name, b.id] },
+      {:prompt => 'Select a categories'},{:required => true}%>
+       </div>
+    </div>
     <div class="label-field-pair">
       <%= f.label :"#{t('name')}"%>
       <div class="input-field"><%= f.text_field :name  %></div>

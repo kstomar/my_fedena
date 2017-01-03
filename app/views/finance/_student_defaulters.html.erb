@@ -26,6 +26,8 @@
       <td><%= t('sl_no') %></td>
       <td><%= t('admission_no') %></td>
       <td><%= t('students_name') %></td>
+      <td><%= t('students_name') %></td>
+      <td><%= t('amount_to_pay') %></td>  
       <td></td>
     </tr>
     <%@defaulters.each_with_index do |s,i| %>
@@ -34,6 +36,8 @@
           <td class="col-5"><%= i+1 %></td>
           <td class="col-1"><%= s.admission_no %></td>
           <td class="col-7"><%= s.full_name %></td>
+          <td class="col-7"><%= s.full_name %></td>
+          <td class="col-7"><%= @date.student_fee_balance(s) %></td>
           <td class="col-1"><%= link_to "► #{t('pay_fees')}", {:action => "pay_fees_defaulters",:id => s.id,:date => @date.id } ,:class=>'submit_button'  %></td>
         </tr>
       <%end%>

@@ -218,6 +218,36 @@ class Batch < ActiveRecord::Base
     end
     ranked_students = ranked_students.sort
   end
+  
+  def find_student_batch_rank student
+    #@students = Student.find_all_by_batch_id(self.id)
+    student = student
+    @grouped_exams = GroupedExam.find_all_by_batch_id(self.id)
+    ordered_scores = []
+    student_scores = []
+    ranked_students = []
+    #@students.each do|student|
+      score = GroupedExamReport.find_by_student_id_and_batch_id_and_score_type(student.id,student.batch_id,"c")
+      marks = 0
+      unless score.nil?
+        marks = score.marks
+      end
+      ordered_scores << marks
+      student_scores << [student.id,marks]
+    #end
+    ordered_scores = ordered_scores.compact.uniq.sort.reverse
+    @students.each do |student|
+      marks = 0
+      student_scores.each do|student_score|
+        if student_score[0]==student.id
+          marks = student_score[1]
+        end
+      end
+      ranked_students << [(ordered_scores.index(marks) + 1),marks,student.id,student]
+    end
+    ranked_students = ranked_students.sort
+  end
+
 
   def find_attendance_rank(start_date,end_date)
     @students = Student.find_all_by_batch_id(self.id)

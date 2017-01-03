@@ -34,7 +34,7 @@
     </div>
     <div id="pdf-info">
       <table id="pdf-table" width="100%" cellspacing="0">
-        <tr class="table-header"><td class="col-pdf"><%= t('sl_no') %></td><td class="col-pdf"><%= t('name') %></td><td class="col-pdf"><%= t('amount') %></td></tr>
+        <tr class="table-header"><td class="col-pdf"><%= t('sl_no') %></td><td class="col-pdf"><%= t('name') %></td><td class="col-pdf"><%= t('amount') %></td> <td><%= t('amount_to_pay') %></td>  </tr>
         <% i = 0 %>
         <% index = 0   %>
         <% @students.each do |s| %>
@@ -42,9 +42,11 @@
             <% i= 0 %>
             <tr class="page-break"><td colspan="3"></td></tr>
             <% if c == 'even' %>
-              <tr class="odd"><td class="col-pdf"><%= t('sl_no') %></td><td class="col-pdf"><%= t('name') %></td><td class="col-pdf"><%= t('amount') %></td></tr>
+              <tr class="odd"><td class="col-pdf"><%= t('sl_no') %></td><td class="col-pdf"><%= t('name') %></td><td class="col-pdf"><%= t('amount') %></td>
+               <td><%= t('amount_to_pay') %></td>  </tr>
             <% else %>
-              <tr class="even"><td class="col-pdf"><%= t('sl_no') %></td><td class="col-pdf"><%= t('name') %></td><td class="col-pdf"><%= t('amount') %></td></tr>
+              <tr class="even"><td class="col-pdf"><%= t('sl_no') %></td><td class="col-pdf"><%= t('name') %></td><td class="col-pdf"><%= t('amount') %></td>
+               <td><%= t('amount_to_pay') %></td>  </tr>
             <% end %>
           <% end %>
           <% @fee_collection = FinanceFeeCollection.find(params[:date]) %>
@@ -61,6 +63,7 @@
               <td class="col-pdf"><%= index += 1 %></td>
               <td class="col-pdf"><%= s.full_name %></td>
               <td class="col-pdf"><%= total_fees %></td>
+              <td class="col-pdf"><%= @date.student_fee_balance(s) %></td>
             </tr>
           <% end %>
         <% end %>

@@ -26,6 +26,31 @@ module ApplicationHelper
     plugin_css_overrides = FedenaPlugin::CSS_OVERRIDES["#{controller.controller_path}_#{controller.action_name}"]
     stylesheets << plugin_css_overrides.collect{|p| "#{@direction}plugin_css/#{p}"}
   end
+  
+  def position_this_term student,exam_group
+    ranking = {}
+    @students.each_with_index do |stu,i|
+      ranking[stu.id] = exam_group.total_marks(stu)[0]
+    end
+    position = 0
+    ranking.sort_by {|_key, value| value}.reverse.each_with_index do |(key,value),i|
+      position = i + 1 if key.to_i == student.id   
+    end
+    position
+  end
+  
+  def position_this_avg(marks,student)
+    ranking = {}
+    @students.each_with_index do |stu,i|
+      ranking[stu.id] = exam_group.total_marks(stu)[0]
+    end
+  end
+  
+  def meangrade grade
+    grade_suppose =  {"A"=>12,"A-"=>11,"B+"=>10,"B"=>9,"B-"=>8,"C+"=>7,"C"=>6,"C-"=>5,"D+"=>4,"D"=>3,"D-"=>2,"E"=>1}
+    aa = grade.map {|a| grade_suppose[a] }.compact.sum/grade.count
+    grade_suppose.index(aa)
+  end
 
   def observe_fields(fields, options)
 	  with = ""                          #prepare a value of the :with parameter

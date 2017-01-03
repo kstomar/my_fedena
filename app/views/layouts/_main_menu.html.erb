@@ -68,6 +68,11 @@
         <% if permitted_to? :settings, :configuration %>
           <li><%= link_to "#{t('manage_student_category')}", :controller => "student", :action => "categories" %></li>
         <% end %>
+
+        <% if permitted_to? :settings, :configuration %>
+          <li><%= link_to "Add subjects categories", :controller=>"subject_categories", :action=>"index" %></li>
+        <% end %>
+
         <% if permitted_to? :index, :subjects %>
           <li><%= link_to "#{t('manage_subject')}", subjects_path %></li>
         <% end %>

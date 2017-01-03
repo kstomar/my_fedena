@@ -150,7 +150,15 @@ class Course < ActiveRecord::Base
   def cce_weightages_for_exam_category(cce_exam_cateogry_id)
     cce_weightages.all(:conditions=>{:cce_exam_category_id=>cce_exam_cateogry_id})
   end
-
+  
+  def ranking_by_courses(student_id)
+    @batches = self.active_batches
+    @students = Student.find_all_by_batch_id(@batches)
+    @grouped_exams = GroupedExam.find_all_by_batch_id(@batches)
+    @ranked_students = self.find_course_rank(@batches.collect(&:id),@sort_order)
+    rank = @ranked_students.map {|a| ["student_id_#{a[3]}",a[1]]}
+    [Hash[*rank.flatten]["student_id_#{student_id}"],rank.count ]
+  end
   private
 
   def cce_weightage_valid
