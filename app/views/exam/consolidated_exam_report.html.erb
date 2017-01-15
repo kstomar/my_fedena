@@ -28,6 +28,7 @@
 <div id="inner-tab-menu">
   <ul>
     <li><%= link_to "#{t('pdf_report')}",{:controller => "exam", :action => "consolidated_exam_report_pdf", :exam_group => @exam_group.id, :page_height=>2000},:target => '_blank' %></li>
+    <li><%= link_to "xls report",{:controller => "exam", :action => "consolidated_exam_report_xls", :exam_group => @exam_group.id, :page_height=>2000,:format=> 'xls'},:target => '_blank' %></li>
   </ul>
 </div>
 <div id="page-yield">
@@ -63,6 +64,7 @@
             <% end %>
           <% end %>
         </tr>
+        <% @total_count = {} %>
         <% @exam_group.batch.students.each do |student|%>
           <tr class="tr-<%= cycle('odd', 'even') %>">
             <td class="col-2"><%= student.full_name %></td>
@@ -103,14 +105,21 @@
                   <td class="col-3">
                     <% if @exam_group.exam_type == "MarksAndGrades" %>
                       <%= exam_score.nil? ? '-' :  "#{(exam_score.marks || "-")}" + "(#{(exam_score.grading_level || "-")})" %>
+                      <% @total_count[exam.id] = 0 if !@total_count.key?(exam.id)%>
+                      <% @total_count[exam.id] += exam_score.nil? ? 0 :  exam_score.marks %>
+                    
                     <% else %>
                       <%= exam_score.nil? ? '-' : exam_score.marks || "-" %>
+                      <% @total_count[exam.id] = 0 if !@total_count.key?(exam.id)%>
+                      <% @total_count[exam.id] += exam_score.nil? ? 0 :  exam_score.marks %>
                     <% end %>
                   </td>
                   <% total_marks = total_marks+(exam_score.marks || 0) unless exam_score.nil?  %>
                   <% total_max_marks = total_max_marks+exam.maximum_marks unless exam_score.nil? %>
                 <% else %>
                   <td class="col-3"><%= exam_score.nil? ? '-' : exam_score.grading_level || "-" %></td>
+                  <% @total_count[exam.id] = 0 if !@total_count.key?(exam.id)%>
+                  <% @total_count[exam.id] += exam_score.nil? ? 0 :  exam_score.marks %>
                 <% end %>
               <% end %>
               <% unless @exam_group.exam_type == "Grades" %>
@@ -120,6 +129,13 @@
             </tr>
           <% end %>
         <% end %>
+        <tr class="tr-head">
+          <td> MeanScore </td>
+          <% @exam_group.exams.each do |exam| %>
+            <td><%= (@total_count[exam.id]/@exam_group.batch.students.count).round(2)%></td>
+          <% end %>
+          <td class="totalCol">Total: <%#= (@total_count["total_avg"]/@batch.students.count).round(2)%></td>
+        </tr>
       </table></div>
     <div class="extender"></div>
   </div>

@@ -335,6 +335,119 @@ class ExamController < ApplicationController
     #        end
   end
 
+  def consolidated_exam_report_xls
+    @exam_group = ExamGroup.find(params[:exam_group])
+    @batch = @exam_group.batch
+    @total_count = {}
+    require 'spreadsheet'
+    Spreadsheet.client_encoding = 'UTF-8'
+    book = Spreadsheet::Workbook.new
+    sheet1 = book.create_worksheet
+    
+    subject_code = @exam_group.exams.map do |exam|
+      exam.subject.code
+    end
+    sheet1.row(1).concat subject_code.unshift('Name').push('percentage (%)')
+    
+    @exam_group.batch.students.each_with_index do |student, i|
+      array = [student.full_name]
+      total_marks = 0
+      total_max_marks = 0
+      @exam_group.exams.each do |exam|
+        exam_score = ExamScore.find_by_student_id_and_exam_id(student.id,exam.id)
+        array << (exam_score.marks)
+        @total_count[exam.id] = 0 if !@total_count.key?(exam.id)
+        @total_count[exam.id] += exam_score.nil? ? 0 :  exam_score.marks
+        total_marks = total_marks+(exam_score.marks || 0) unless exam_score.nil?
+        total_max_marks = total_max_marks+exam.maximum_marks unless exam_score.nil?
+      end
+      percentage = total_marks*100/total_max_marks.to_f unless total_max_marks == 0
+      array << (percentage unless total_max_marks == 0)
+      sheet1.row(i+2).concat array
+    end
+    arry = ["MeanScore"]
+    @exam_group.exams.each do |exam|
+     arry <<  (@total_count[exam.id]/@exam_group.batch.students.count).round(2)
+    end
+    arry << "a"
+    sheet1.row(@batch.students.count.to_i + 2).concat arry
+    format = Spreadsheet::Format.new :color => :blue,
+                                     :weight => :bold,
+                                     :size => 12
+    sheet1.row(0).default_format = format
+
+    bold = Spreadsheet::Format.new :weight => :bold
+    4.times do |x| sheet1.row(x + 1).set_format(0, bold) end
+    
+    filename = File.join(Rails.root,"x.xls")
+    book.write filename
+    #send_data book.render, :filename => "x.pdf", :type => "application/pdf"
+    send_file filename  
+  end
+
+  def consolidated_exam_report_exam_group
+    @batch = Batch.find(params[:batch])
+    @subjects = Subject.find_all_by_batch_id(params[:batch],:conditions=>"is_deleted=false")
+  end
+
+  def consolidated_exam_report_exam_group_pdf
+    @batch = Batch.find(params[:batch])
+    @subjects = Subject.find_all_by_batch_id(params[:batch],:conditions=>"is_deleted=false")
+    @exam_group = @batch.exam_groups.first
+    
+    render :pdf => 'consolidated_exam_report_exam_group_pdf',
+      :page_size=> 'A3'
+    #        respond_to do |format|
+    #            format.pdf { render :layout => false }
+    #        end
+  end
+  
+  def consolidated_exam_report_exam_group_xls
+    @batch = Batch.find(params[:batch])
+    @subjects = Subject.find_all_by_batch_id(params[:batch],:conditions=>"is_deleted=false")
+    @total_count = {}
+    require 'spreadsheet'
+    Spreadsheet.client_encoding = 'UTF-8'
+    book = Spreadsheet::Workbook.new
+    sheet1 = book.create_worksheet
+    sheet1.merge_cells(0, 0, 0, @subjects.count + 1)
+    sheet1.row(1).concat @subjects.map(&:code).unshift('Name').push('percentage (%)')
+     
+    @batch.students.each_with_index do |student, i|
+      array = [student.full_name]
+      @subjects.each do |subject|
+        subject_average = GroupedExamReport.find_by_student_id_and_subject_id_and_score_type(student.id,subject.id,"s")
+        array << (subject_average.present? ? subject_average.marks : "-")
+        @total_count[subject.code] = 0 if !@total_count.key?(subject.code)
+        @total_count[subject.code] += subject_average.present? ? subject_average.marks : 0
+      end
+      total_avg = GroupedExamReport.find_by_student_id_and_batch_id_and_score_type(student.id,student.batch.id,"c")
+      array << (total_avg.present? ? total_avg.marks : "-")
+      @total_count["total_avg"] = 0 if !@total_count.key?("total_avg")
+      @total_count["total_avg"] += total_avg.present? ? total_avg.marks : 0
+      sheet1.row(i+2).concat array
+    end
+    arry = ["MeanScore"]
+    @subjects.each do |subject|
+      arry << (@total_count[subject.code]/@batch.students.count).round(2)
+    end
+    arry << (@total_count["total_avg"]/@batch.students.count).round(2)
+    sheet1.row(@batch.students.count.to_i + 2).concat arry
+    
+  format = Spreadsheet::Format.new :color => :blue,
+                                   :weight => :bold,
+                                   :size => 12
+  sheet1.row(0).default_format = format
+
+  bold = Spreadsheet::Format.new :weight => :bold
+  4.times do |x| sheet1.row(x + 1).set_format(0, bold) end
+  
+  filename = File.join(Rails.root,"x.xls")
+  book.write filename
+  #send_data book.render, :filename => "x.pdf", :type => "application/pdf"
+  send_file filename
+  end
+
   def subject_rank
     @batches = Batch.active
     @subjects = []
@@ -1090,9 +1203,8 @@ class ExamController < ApplicationController
         @students = Student.find_all_by_id(params[:student])
       end
     end
-
-
   end
+
   def generated_report4_pdf
     #grouped-exam-report-for-batch
     if params[:student].nil?

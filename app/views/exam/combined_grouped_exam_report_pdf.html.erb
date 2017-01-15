@@ -90,9 +90,9 @@
                         <%= exam_score.present? ? "#{exam_score.marks.present? ? ("%.2f" %((exam_score.marks.to_f/@exam.maximum_marks.to_f)*100)) : "-"}"+" ["+"#{exam_score.grading_level.present? ? exam_score.grading_level : "-"}"+"]" : "-" %>
                       <% else %>
                         <% if exam_group.exam_type == "MarksAndGrades" %>
-                          <%= exam_score.nil? ? '-' :  "#{(exam_score.marks || "-")}" +"/"+@exam.maximum_marks.to_s+"[#{(exam_score.grading_level || "-")}]" %>
+                          <%= exam_score.nil? ? '-' :  "#{(exam_score.marks.to_i || "-")}" %>
                         <% elsif exam_group.exam_type == "Marks" %>
-                          <%= exam_score.nil? ? '-' : "#{exam_score.marks || "-"}/"+@exam.maximum_marks.to_s %>
+                          <%= exam_score.nil? ? '-' : "#{exam_score.marks || "-"}"%>
                         <% else %>
                           <%= exam_score.nil? ? '-' : (exam_score.grading_level || '-')  %>
                         <% end %>
@@ -281,15 +281,15 @@
               </tr>
               <tr class="even">
                 <td class="col-pdf" colspan="3">Outstanding Fees </td>
-                <td class="col-pdf" colspan="4">Outstanding Fees </td>
+                <td class="col-pdf" colspan="4"> </td>
               </tr>
               <tr class="odd">
                 <td class="col-pdf" colspan="3">Next Term fees</td>
-                <td class="col-pdf" colspan="4">Next Term fees</td>
+                <td class="col-pdf" colspan="4"></td>
               </tr>
               <tr class="even">
                 <td class="col-pdf" colspan="3">TOTAL FEES</td>
-                <td class="col-pdf" colspan="4">Next Term fees</td>
+                <td class="col-pdf" colspan="4"></td>
               </tr>
             </table>
 

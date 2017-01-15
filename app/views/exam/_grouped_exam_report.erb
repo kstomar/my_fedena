@@ -85,7 +85,7 @@
         <% elsif grade_type=="CWA" %>
           <td colspan="2" align="right"><%= t('weighted_average') %></td>
         <% else %>
-          <td align="right"><%= t('percentage') %></td>
+          <td align="right"><%= t('percentage') %> (%)</td>
         <% end %>
         <% @exam_groups.each do |exam_group| %>
           <% exam_total = GroupedExamReport.find_by_student_id_and_exam_group_id_and_score_type(@student.id,exam_group.id,"e") %>

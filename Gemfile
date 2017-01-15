@@ -7,3 +7,4 @@ gem 'mysql','2.8.1'
 gem 'rake','0.8.7'
 gem 'rush','0.6.8'
 
+gem 'spreadsheet'
