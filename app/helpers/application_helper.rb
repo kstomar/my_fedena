@@ -52,6 +52,23 @@ module ApplicationHelper
     grade_suppose.index(aa)
   end
 
+  def total_score student_id,exam_group
+    student = Student.find(student_id)
+    @subjects.map do |subject| 
+      @exam= Exam.find_by_subject_id_and_exam_group_id(subject.id,exam_group.id)
+      exam_score = ExamScore.find_by_student_id(student.id, :conditions=>{:exam_id=>@exam.id})
+      exam_score.marks.to_f
+    end.sum  
+  end
+
+  def total_out_of student_id,exam_group
+    student = Student.find(student_id)
+    @subjects.map do |subject| 
+      @exam= Exam.find_by_subject_id_and_exam_group_id(subject.id,exam_group.id)
+      @exam.maximum_marks.to_f
+    end.sum  
+  end
+
   def observe_fields(fields, options)
 	  with = ""                          #prepare a value of the :with parameter
 	  for field in fields

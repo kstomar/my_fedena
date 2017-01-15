@@ -26,6 +26,7 @@ class GradingLevel < ActiveRecord::Base
   default_scope :order => 'min_score desc'
   named_scope   :default, :conditions => { :batch_id => nil, :is_deleted => false }
   named_scope   :for_batch, lambda { |b| { :conditions => { :batch_id => b.to_i,:is_deleted => false } } }
+
   named_scope   :for_subject_category, lambda { |sc| { :conditions => { :subject_category_id => sc.to_i,:is_deleted => false },:order => 'min_score asc' } }
 
   def inactivate
